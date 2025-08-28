@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -79,7 +80,6 @@ namespace ProxyPooler
             "http://pubproxy.com/api/proxy",
             "https://raw.githubusercontent.com/mmpx12/proxy-list/master/https.txt"
         };
-        private static string dir = "C:\\LongInts\\ProxyPooler\\FoundAlive.txt";
         private static int FoundAlive = 0;
         private static int Checked = 0;
         private static int TotalUnchecked = 0;
@@ -87,156 +87,133 @@ namespace ProxyPooler
         private static string confirmLink = "https://www.google.com/";
         private static int timeOut = 5000;
         private static readonly HttpClient client = new HttpClient { Timeout = TimeSpan.FromMilliseconds(timeOut) };
-
+        private static string exeDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        private static string dir = Path.Combine(exeDir ?? ".", "FoundAlive.txt");
         static async Task Main(string[] args)
         {
             // Memory.AntiTamper(); Commented out for debugging purposes!
             Colorful.Console.Clear();
             Colorful.Console.Title = "Safeguarding your virtual vessel is the key to a secure voyage.";
             Logo();
-            if (Directory.Exists("C:\\LongInts"))
+            Colorful.Console.WriteLine("\n" + Center("[1]: Fast Mode"), Color.White);
+            Colorful.Console.WriteLine(Center("[2]: Detailed Mode"), Color.White);
+            Colorful.Console.WriteLine(Center("[3]: Filtered Mode"), Color.White);
+            Colorful.Console.WriteLine(Center("[4]: ReCheck Mode"), Color.White);
+            Colorful.Console.WriteLine(Center("[5]: CIDR Scan Mode"), Color.White);
+            Colorful.Console.WriteLine(Center("[6]: Settings"), Color.White);
+            Colorful.Console.WriteLine(Center("[7]: Exit"), Color.White);
+            Colorful.Console.Write("\n" + Center("--> "), Color.White);
+            string input = Colorful.Console.ReadLine();
+            // Fast Mode
+            if (input == "1")
             {
-                if (Directory.Exists("C:\\LongInts\\ProxyPooler"))
+                Colorful.Console.Clear();
+                Logo();
+                StartTitleUpdate();
+                await ScrapeFastMode(links);
+                Colorful.Console.ReadKey();
+                Environment.Exit(0);
+            }
+            // Detailed Mode
+            if (input == "2")
+            {
+                Colorful.Console.Clear();
+                Logo();
+                StartTitleUpdate();
+                await ScrapeDetailedMode(links);
+                Colorful.Console.ReadKey();
+                Environment.Exit(0);
+            }
+            // Filtered Mode
+            if (input == "3")
+            {
+                Colorful.Console.Clear();
+                Logo();
+                Colorful.Console.WriteLine("\n" + Center("[1]: Private/High Quality(HQ) ONLY"), Color.White);
+                Colorful.Console.WriteLine(Center("[2]: Go Back (More Filtered Modes Coming Soon!)"), Color.White);
+                Colorful.Console.Write("\n" + Center("--> "), Color.White);
+                string input2 = Colorful.Console.ReadLine();
+                if (input2 == "1")
                 {
-                    if (File.Exists(dir))
-                    {
-                        Colorful.Console.WriteLine("\n" + Center("[1]: Fast Mode"), Color.White);
-                        Colorful.Console.WriteLine(Center("[2]: Detailed Mode"), Color.White);
-                        Colorful.Console.WriteLine(Center("[3]: Filtered Mode"), Color.White);
-                        Colorful.Console.WriteLine(Center("[4]: ReCheck Mode"), Color.White);
-                        Colorful.Console.WriteLine(Center("[5]: CIDR Scan Mode"), Color.White);
-                        Colorful.Console.WriteLine(Center("[6]: Settings"), Color.White);
-                        Colorful.Console.WriteLine(Center("[7]: Exit"), Color.White);
-                        Colorful.Console.Write("\n" + Center("--> "), Color.White);
-                        string input = Colorful.Console.ReadLine();
-                        // Fast Mode
-                        if (input == "1")
-                        {
-                            Colorful.Console.Clear();
-                            Logo();
-                            StartTitleUpdate();
-                            await ScrapeFastMode(links);
-                            Colorful.Console.ReadKey();
-                            Environment.Exit(0);
-                        }
-                        // Detailed Mode
-                        if (input == "2")
-                        {
-                            Colorful.Console.Clear();
-                            Logo();
-                            StartTitleUpdate();
-                            await ScrapeDetailedMode(links);
-                            Colorful.Console.ReadKey();
-                            Environment.Exit(0);
-                        }
-                        // Filtered Mode
-                        if (input == "3")
-                        {
-                            Colorful.Console.Clear();
-                            Logo();
-                            Colorful.Console.WriteLine("\n" + Center("[1]: Private/High Quality(HQ) ONLY"), Color.White);
-                            Colorful.Console.WriteLine(Center("[2]: Go Back (More Filtered Modes Coming Soon!)"), Color.White);
-                            Colorful.Console.Write("\n" + Center("--> "), Color.White);
-                            string input2 = Colorful.Console.ReadLine();
-                            if (input2 == "1")
-                            {
-                                Colorful.Console.Clear();
-                                Logo();
-                                StartTitleUpdate();
-                                await ScrapeHQONLYMode(links);
-                                Colorful.Console.ReadKey();
-                                Environment.Exit(0);
-                            }
-                            if (input2 != "2")
-                            {
-                                await Main(args);
-                            }
-                            else
-                            {
-                                await Main(args);
-                            }
-                        }
-                        // ReCheck Mode
-                        if (input == "4")
-                        {
-                            Colorful.Console.Clear();
-                            Logo();
-                            StartTitleUpdate();
-                            await ReCheckONLYMode();
-                            Colorful.Console.ReadKey();
-                            Environment.Exit(0);
-                        }
-                        // CIDR Scan Mode
-                        if (input == "5")
-                        {
-                            Colorful.Console.Clear();
-                            Logo();
-                            StartTitleUpdate();
-                            await CIDRScanONLYMode();
-                            Colorful.Console.ReadKey();
-                            Environment.Exit(0);
-                        }
-                        // Settings
-                        if (input == "6")
-                        {
-                            Colorful.Console.Clear();
-                            Logo();
-                            Colorful.Console.WriteLine("\n" + Center("[1]: Link to Confirm Alive Proxies = " + confirmLink), Color.White);
-                            Colorful.Console.WriteLine(Center($"[2]: Timeout before Dead Proxies are Confirmed = {timeOut}ms"), Color.White);
-                            Colorful.Console.WriteLine(Center("[3]: Go Back"), Color.White);
-                            Colorful.Console.Write("\n" + Center("--> "), Color.White);
-                            string input2 = Colorful.Console.ReadLine();
-                            if (input2 == "1")
-                            {
-                                Colorful.Console.Clear();
-                                Logo();
-                                Colorful.Console.WriteLine("\n" + Center("[CURRENT]: Link to Confirm Alive Proxies = " + confirmLink), Color.White);
-                                Colorful.Console.Write(Center("[NEW]: Link to Confirm Alive Proxies = "), Color.White);
-                                confirmLink = Colorful.Console.ReadLine();
-                                await Main(args);
-                            }
-                            if (input2 == "2")
-                            {
-                                Colorful.Console.Clear();
-                                Logo();
-                                Colorful.Console.WriteLine("\n" + Center($"[CURRENT]: Timeout before Dead Proxies are Confirmed = {timeOut}ms"), Color.White);
-                                Colorful.Console.Write(Center("[NEW]: Timeout before Dead Proxies are Confirmed = "), Color.White);
-                                timeOut = Convert.ToInt32(Colorful.Console.ReadLine());
-                                await Main(args);
-                            }
-                            if (input2 != "3")
-                            {
-                                await Main(args);
-                            }
-                            else
-                            {
-                                await Main(args);
-                            }
-                        }
-                        if (input == "7")
-                        {
-                            Environment.Exit(0);
-                        }
-                        else
-                        {
-                            await Main(args);
-                        }
-                    }
-                    else
-                    {
-                        File.Create(dir).Dispose();
-                        await Main(args);
-                    }
+                    Colorful.Console.Clear();
+                    Logo();
+                    StartTitleUpdate();
+                    await ScrapeHQONLYMode(links);
+                    Colorful.Console.ReadKey();
+                    Environment.Exit(0);
+                }
+                if (input2 != "2")
+                {
+                    await Main(args);
                 }
                 else
                 {
-                    Directory.CreateDirectory("C:\\LongInts\\ProxyPooler");
                     await Main(args);
                 }
             }
+            // ReCheck Mode
+            if (input == "4")
+            {
+                Colorful.Console.Clear();
+                Logo();
+                StartTitleUpdate();
+                await ReCheckONLYMode();
+                Colorful.Console.ReadKey();
+                Environment.Exit(0);
+            }
+            // CIDR Scan Mode
+            if (input == "5")
+            {
+                Colorful.Console.Clear();
+                Logo();
+                StartTitleUpdate();
+                await CIDRScanONLYMode();
+                Colorful.Console.ReadKey();
+                Environment.Exit(0);
+            }
+            // Settings
+            if (input == "6")
+            {
+                Colorful.Console.Clear();
+                Logo();
+                Colorful.Console.WriteLine("\n" + Center("[1]: Link to Confirm Alive Proxies = " + confirmLink), Color.White);
+                Colorful.Console.WriteLine(Center($"[2]: Timeout before Dead Proxies are Confirmed = {timeOut}ms"), Color.White);
+                Colorful.Console.WriteLine(Center("[3]: Go Back"), Color.White);
+                Colorful.Console.Write("\n" + Center("--> "), Color.White);
+                string input2 = Colorful.Console.ReadLine();
+                if (input2 == "1")
+                {
+                    Colorful.Console.Clear();
+                    Logo();
+                    Colorful.Console.WriteLine("\n" + Center("[CURRENT]: Link to Confirm Alive Proxies = " + confirmLink), Color.White);
+                    Colorful.Console.Write(Center("[NEW]: Link to Confirm Alive Proxies = "), Color.White);
+                    confirmLink = Colorful.Console.ReadLine();
+                    await Main(args);
+                }
+                if (input2 == "2")
+                {
+                    Colorful.Console.Clear();
+                    Logo();
+                    Colorful.Console.WriteLine("\n" + Center($"[CURRENT]: Timeout before Dead Proxies are Confirmed = {timeOut}ms"), Color.White);
+                    Colorful.Console.Write(Center("[NEW]: Timeout before Dead Proxies are Confirmed = "), Color.White);
+                    timeOut = Convert.ToInt32(Colorful.Console.ReadLine());
+                    await Main(args);
+                }
+                if (input2 != "3")
+                {
+                    await Main(args);
+                }
+                else
+                {
+                    await Main(args);
+                }
+            }
+            if (input == "7")
+            {
+                Environment.Exit(0);
+            }
             else
             {
-                Directory.CreateDirectory("C:\\LongInts");
                 await Main(args);
             }
         }
@@ -258,65 +235,72 @@ namespace ProxyPooler
             {
                 while (true)
                 {
-                    Colorful.Console.Title = $"Currently you have Checked {Checked} Proxies & Found {FoundAlive} Alive Proxies being Saved to {dir}";
-                    await Task.Delay(1000); // Update every second
+                    Colorful.Console.Title = $"Currently you have Checked {Checked} Proxies & Found {FoundAlive} Alive Proxies";
                 }
             });
         }
-
         // Scrapes proxies from provided links, checks them quickly, and saves live proxies to file.
         private static async Task ScrapeFastMode(string[] links)
         {
-            SemaphoreSlim semaphore = new SemaphoreSlim(100); // Increased concurrency for faster processing
-            ConcurrentDictionary<string, byte> uniqueProxies = new ConcurrentDictionary<string, byte>();
-            List<Task> tasks = new List<Task>();
-            foreach (string link in links)
+            SemaphoreSlim semaphore = new SemaphoreSlim(100);
+            HashSet<string> uniqueProxies = new HashSet<string>();
+            HttpClient client = new HttpClient();
+            try
             {
-                tasks.Add(Task.Run(async () =>
+                List<Task> list = new List<Task>();
+                foreach (IEnumerable<string> item in SplitIntoBatches(links, links.Length))
                 {
-                    await semaphore.WaitAsync();
-                    try
+                    IEnumerable<Task> collection = item.Select((Func<string, Task>)async delegate (string link)
                     {
-                        string content = await client.GetStringAsync(link);
-                        MatchCollection matches = Regex.Matches(content, @"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{2,5}");
-                        foreach (Match match in matches)
+                        await semaphore.WaitAsync();
+                        try
                         {
-                            string proxy = match.Value;
-                            if (uniqueProxies.TryAdd(proxy, 0))
+                            MatchCollection matchCollection = Regex.Matches(await (await client.GetAsync(link)).Content.ReadAsStringAsync(), "\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}:\\d{2,5}");
+                            if (matchCollection.Count > 0)
                             {
-                                bool isAlive = await Check(proxy);
-                                Interlocked.Increment(ref Checked);
-                                if (isAlive)
+                                foreach (Match item2 in matchCollection)
                                 {
-                                    Interlocked.Increment(ref FoundAlive);
-                                    File.AppendAllText(dir, proxy + "\n");
-                                    Colorful.Console.Write("         [", Color.White);
-                                    Colorful.Console.Write("FOUND", Color.LimeGreen);
-                                    Colorful.Console.Write("]", Color.White);
-                                    Colorful.Console.Write("> ", Color.Gray);
-                                    Colorful.Console.WriteWithGradient($"{proxy}\n", Color.Red, Color.White, 10);
-                                    await db($"**`{proxy}`**");
+                                    string proxy = item2.Value;
+                                    if (uniqueProxies.Add(proxy))
+                                    {
+                                        bool num = await Check(proxy);
+                                        Checked++;
+                                        if (num)
+                                        {
+                                            FoundAlive++;
+                                            File.AppendAllText(dir, proxy + "\n");
+                                            await db("**`" + proxy + "`**");
+                                            Colorful.Console.Write("         [", Color.White);
+                                            Colorful.Console.Write("FOUND", Color.LimeGreen);
+                                            Colorful.Console.Write("]", Color.White);
+                                            Colorful.Console.Write("> ", Color.Gray);
+                                            Colorful.Console.WriteWithGradient($"{proxy}\n", Color.Red, Color.White, 10);
+                                        }
+                                    }
                                 }
                             }
                         }
-                    }
-                    catch (HttpRequestException)
-                    {
-                        Colorful.Console.WriteLine($"[DEAD LINK]> {link}", Color.Red);
-                    }
-                    catch (Exception ex)
-                    {
-                        Colorful.Console.WriteLine($"[ERROR]> {link}: {ex.Message}", Color.Red);
-                    }
-                    finally
-                    {
-                        semaphore.Release();
-                    }
-                }));
+                        catch (Exception ex)
+                        {
+                            Colorful.Console.WriteLine(ex.Message ?? "", Color.Red);
+                        }
+                        finally
+                        {
+                            semaphore.Release();
+                        }
+                    });
+                    list.AddRange(collection);
+                }
+                await Task.WhenAll(list);
             }
-            await Task.WhenAll(tasks);
+            finally
+            {
+                if (client != null)
+                {
+                    ((IDisposable)client).Dispose();
+                }
+            }
         }
-
         // Scrapes proxies with detailed info (country, ISP) and saves live proxies to file.
         private static async Task ScrapeDetailedMode(string[] links)
         {
@@ -355,9 +339,9 @@ namespace ProxyPooler
                                         Colorful.Console.Write("> ", Color.Gray);
                                         Colorful.Console.WriteWithGradient(proxy, Color.Red, Color.White, 10);
                                         Colorful.Console.Write(" in ", Color.LightGray);
-                                        Colorful.Console.Write($"{ipData["country"]} ({ipData["countryCode"]})", Color.White);
+                                        Colorful.Console.Write($"{ipData["city"]}, {ipData["country"]} ({ipData["countryCode"]})", Color.White);
                                         Colorful.Console.Write(" by ", Color.LightGray);
-                                        Colorful.Console.Write($"{ipData["isp"]}\n", Color.White);
+                                        Colorful.Console.Write($"{ipData["isp"]} - {ipData["asname"]}\n", Color.White);
                                     }
                                     if (((string)ipData["mobile"]).Contains("True"))
                                     {
@@ -368,9 +352,9 @@ namespace ProxyPooler
                                         Colorful.Console.Write("> ", Color.Gray);
                                         Colorful.Console.WriteWithGradient(proxy, Color.Red, Color.White, 10);
                                         Colorful.Console.Write(" in ", Color.LightGray);
-                                        Colorful.Console.Write($"{ipData["country"]} ({ipData["countryCode"]})", Color.White);
+                                        Colorful.Console.Write($"{ipData["city"]}, {ipData["country"]} ({ipData["countryCode"]})", Color.White);
                                         Colorful.Console.Write(" by ", Color.LightGray);
-                                        Colorful.Console.Write($"{ipData["isp"]}\n", Color.White);
+                                        Colorful.Console.Write($"{ipData["isp"]} - {ipData["asname"]}\n", Color.White);
                                     }
                                     else
                                     {
@@ -380,9 +364,9 @@ namespace ProxyPooler
                                         Colorful.Console.Write("> ", Color.Gray);
                                         Colorful.Console.WriteWithGradient(proxy, Color.Red, Color.White, 10);
                                         Colorful.Console.Write(" in ", Color.LightGray);
-                                        Colorful.Console.Write($"{ipData["country"]} ({ipData["countryCode"]})", Color.White);
+                                        Colorful.Console.Write($"{ipData["city"]}, {ipData["country"]} ({ipData["countryCode"]})", Color.White);
                                         Colorful.Console.Write(" by ", Color.LightGray);
-                                        Colorful.Console.Write($"{ipData["isp"]}\n", Color.White);
+                                        Colorful.Console.Write($"{ipData["isp"]} - {ipData["asname"]}\n", Color.White);
                                     }
                                 }
                             }
@@ -404,7 +388,6 @@ namespace ProxyPooler
             }
             await Task.WhenAll(tasks);
         }
-
         // Scrapes only high-quality (non-proxy flagged) proxies with detailed info and saves to file.
         private static async Task ScrapeHQONLYMode(string[] links)
         {
@@ -431,7 +414,7 @@ namespace ProxyPooler
                                 {
                                     string[] array = proxy.Split(':');
                                     ipData = await ParseLink($"http://ip-api.com/json/{array[0]}?fields=status,message,continent,continentCode,country,countryCode,region,regionName,city,district,zip,lat,lon,timezone,offset,currency,isp,org,as,asname,reverse,mobile,proxy,hosting,query");
-                                    if (((string)ipData["proxy"]).Contains("False"))
+                                    if (((string)ipData["proxy"]).Contains("False") && ((string)ipData["hosting"]).Contains("False"))
                                     {
                                         Interlocked.Increment(ref FoundAlive);
                                         File.AppendAllText(dir, proxy + "\n");
@@ -443,9 +426,25 @@ namespace ProxyPooler
                                         Colorful.Console.Write("> ", Color.Gray);
                                         Colorful.Console.WriteWithGradient(proxy, Color.Red, Color.White, 10);
                                         Colorful.Console.Write(" in ", Color.LightGray);
-                                        Colorful.Console.Write($"{ipData["country"]} ({ipData["countryCode"]})", Color.White);
+                                        Colorful.Console.Write($"{ipData["city"]}, {ipData["country"]} ({ipData["countryCode"]})", Color.White);
                                         Colorful.Console.Write(" by ", Color.LightGray);
-                                        Colorful.Console.Write($"{ipData["isp"]}\n", Color.White);
+                                        Colorful.Console.Write($"{ipData["isp"]} - {ipData["asname"]}\n", Color.White);
+                                    }
+                                    if (((string)ipData["mobile"]).Contains("True"))
+                                    {
+                                        Interlocked.Increment(ref FoundAlive);
+                                        File.AppendAllText(dir, proxy + "\n");
+                                        await db($"**`{proxy}`**");
+                                        Colorful.Console.Write("         [", Color.White);
+                                        Colorful.Console.Write("FOUND", Color.LimeGreen);
+                                        Colorful.Console.Write(" MOBILE", Color.Lime);
+                                        Colorful.Console.Write("]", Color.White);
+                                        Colorful.Console.Write("> ", Color.Gray);
+                                        Colorful.Console.WriteWithGradient(proxy, Color.Red, Color.White, 10);
+                                        Colorful.Console.Write(" in ", Color.LightGray);
+                                        Colorful.Console.Write($"{ipData["city"]}, {ipData["country"]} ({ipData["countryCode"]})", Color.White);
+                                        Colorful.Console.Write(" by ", Color.LightGray);
+                                        Colorful.Console.Write($"{ipData["isp"]} - {ipData["asname"]}\n", Color.White);
                                     }
                                 }
                             }
@@ -467,7 +466,6 @@ namespace ProxyPooler
             }
             await Task.WhenAll(tasks);
         }
-
         // Re-checks proxies from FoundAlive.txt, clears the file, and saves newly confirmed live proxies.
         private static async Task ReCheckONLYMode()
         {
@@ -493,12 +491,12 @@ namespace ProxyPooler
                                 {
                                     Interlocked.Increment(ref FoundAlive);
                                     File.AppendAllText(dir, proxy + "\n");
+                                    await db($"**`{proxy}`**");
                                     Colorful.Console.Write("         [", Color.White);
                                     Colorful.Console.Write("FOUND", Color.LimeGreen);
                                     Colorful.Console.Write("]", Color.White);
                                     Colorful.Console.Write("> ", Color.Gray);
                                     Colorful.Console.WriteWithGradient($"{proxy}\n", Color.Red, Color.White, 10);
-                                    await db($"**`{proxy}`**");
                                 }
                             }
                             finally
@@ -515,7 +513,6 @@ namespace ProxyPooler
                 Colorful.Console.WriteLine($"[ERROR]> {dir} does not exist!", Color.Red);
             }
         }
-
         // Scans a user-specified CIDR range with a given port and saves live proxies to file.
         private static async Task CIDRScanONLYMode()
         {
@@ -566,7 +563,6 @@ namespace ProxyPooler
             }
             await Task.WhenAll(tasks);
         }
-
         private static async Task<bool> Check(string proxy)
         {
             const int retries = 3;
@@ -598,7 +594,6 @@ namespace ProxyPooler
             }
             return false;
         }
-
         private static async Task<JToken> ParseLink(string link)
         {
             try
@@ -611,7 +606,6 @@ namespace ProxyPooler
                 return JToken.Parse("{\"status\":\"noInternet\"}");
             }
         }
-
         private static string IPRequestHelper(string url)
         {
             try
@@ -626,7 +620,6 @@ namespace ProxyPooler
                 return string.Empty;
             }
         }
-
         private static async Task db(string content)
         {
             try
@@ -642,17 +635,14 @@ namespace ProxyPooler
             {
             }
         }
-
         private static bool TryParseCIDR(string cidr, out uint startIp, out uint endIp)
         {
             startIp = endIp = 0;
             if (string.IsNullOrWhiteSpace(cidr))
                 return false;
-
             var parts = cidr.Split('/');
             if (parts.Length != 2 || !IPAddress.TryParse(parts[0], out var ip))
                 return false;
-
             int prefix;
             if (int.TryParse(parts[1], out prefix))
             {
@@ -675,7 +665,6 @@ namespace ProxyPooler
                 if (prefix < 0 || prefix > 32)
                     return false;
             }
-
             byte[] ipBytes = ip.GetAddressBytes();
             startIp = BitConverter.ToUInt32(ipBytes.Reverse().ToArray(), 0);
             uint maskValue = uint.MaxValue << (32 - prefix);
@@ -683,17 +672,22 @@ namespace ProxyPooler
             endIp = startIp | ~maskValue;
             return true;
         }
-
         private static IEnumerable<uint> GenerateIpRange(uint startIp, uint endIp)
         {
             for (uint ip = startIp; ip <= endIp; ip++)
                 yield return ip;
         }
-
         private static string IpToString(uint ip)
         {
             byte[] bytes = BitConverter.GetBytes(ip).Reverse().ToArray();
             return new IPAddress(bytes).ToString();
+        }
+        private static IEnumerable<IEnumerable<T>> SplitIntoBatches<T>(T[] source, int batchSize)
+        {
+            for (int i = 0; i < source.Length; i += batchSize)
+            {
+                yield return source.Skip(i).Take(batchSize);
+            }
         }
     }
 }
