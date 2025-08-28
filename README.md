@@ -4,7 +4,7 @@
   # Proxy Pooler v2.0
   
 
-<h1><b>‼️ NEW DISCORD SERVER! JOIN <a href="https://discord.gg/KRjZ58MfDD">HERE</a>! ‼️</b></h1>
+<h1><b>Join Our Discord Server @ <a href="https://discord.gg/bMT4CFmPmH">Discord.gg/bMT4CFmPmH</a></b></h1>
   Loops through a list of usernames to check if they are available or unavailable. Click <a href="https://github.com/useragents/Proxyless-TikTok-Username-Checker/issues">here</a> to report bugs.
   
   ![image](https://user-images.githubusercontent.com/103281345/162510554-7fbce4b6-9869-480e-a64f-b96dc56adbd1.png)
