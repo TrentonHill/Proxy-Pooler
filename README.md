@@ -2,6 +2,7 @@
 <div align="center">
   
   <img src="https://i.imgur.com/UdVRM5O.png" alt="Logo" width="150"/>
+  
   # Proxy Pooler v2.0
   
   #1 HTTP/s Proxy Tool on the Market, almost 100% accurate and super fast! Click <a href="https://discord.gg/bMT4CFmPmH">here</a> to report bugs.
