@@ -6,12 +6,12 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("ProxyPooler")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("HTTP/s Proxy Tool")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Long.Integer/TTH")]
 [assembly: AssemblyProduct("ProxyPooler")]
-[assembly: AssemblyCopyright("Copyright ©  2025")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCopyright("Copyright © Long.Integer/TTH 2025")]
+[assembly: AssemblyTrademark("Long.Integer/TTH")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
