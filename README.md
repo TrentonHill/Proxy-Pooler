@@ -1,12 +1,13 @@
 <br/>
 <div align="center">
-  
+  ![image](https://i.imgur.com/UdVRM5O.png)
   # Proxy Pooler v2.0
   
   #1 HTTP/s Proxy Tool on the Market, almost 100% accurate and super fast! Click <a href="https://discord.gg/bMT4CFmPmH">here</a> to report bugs.
   
-  ![image](https://i.imgur.com/LqGZ38N.png)
-
+  ![image](https://i.imgur.com/jtDQe9o.png)
+  ![image](https://i.imgur.com/wgshKwp.png)
+  ![image](https://i.imgur.com/VuKd2JR.png)
   
 </div>
 
