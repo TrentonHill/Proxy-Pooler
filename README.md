@@ -1,8 +1,8 @@
 <br/>
 <div align="center">
-  # Proxy Pooler v2.0
+  Proxy Pooler v2.0
   
-  #1 HTTP/s Proxy Tool on the Market, almost 100% accurate and super fast! Click <a href="https://discord.gg/bMT4CFmPmH">here</a> to report bugs.
+  #1 HTTP/s Proxy Tool on the Market, almost 100% accurate and super fast! Click <a href="https://discord.gg/bMT4CFmPmH">here</a> to join our Discord.
   
   ![image](https://i.imgur.com/cleAYYX.png)
   
