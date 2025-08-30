@@ -196,80 +196,37 @@ namespace ProxyPooler
 
         public static async Task<string> GetIP()
         {
-            try
-            {
-                using (HttpClient client = new HttpClient())
-                {
-                    client.Timeout = TimeSpan.FromSeconds(5);
-                    string ip = await client.GetStringAsync("REDACTED");
-                    ip = ip.Trim();
-                    return ip;
-                }
-            }
-            catch { return "0.0.0.0"; }
+            return null; // REDACTED
         }
 
-        public static async Task db(string content, string type)
+        public static async Task SendLog(string content)
         {
-            try
-            {
-                if (type == "ALIVE")
-                {
-                    // REDACTED
-                }
-                if (type == "HQ")
-                {
-                    // REDACTED
-                }
-                if (type == "MOBILE")
-                {
-                    // REDACTED
-                }
-            }
-            catch {}
-        }
-
-        public static async Task<long> GetServerTime()
-        {
-            try
-            {
-                using (HttpClient client = new HttpClient())
-                {
-                    string url = null; // REDACTED
-                    string json = await client.GetStringAsync(url);
-                    dynamic obj = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
-                    return (long)obj.time;
-                }
-            }
-            catch
-            {
-                return 0;
-            }
+            // REDACTED
         }
 
         public static string ComputeHmac(string data, string secret)
         {
-            return "REDACTED";
+            return null; // REDACTED
         }
 
         public static string GetHWID()
         {
-            return "REDACTED";
+            return null; // REDACTED
         }
 
         private static string GetWMI(string wmiClass, string wmiProperty)
         {
-            return "REDACTED";
+            return null; // REDACTED
         }
 
         private static string GetMAC()
         {
-            return "REDACTED";
+            return null; // REDACTED
         }
 
         public static string[] links = new string[]
         {
-            "REDACTED"
+            "" // REDACTED
         };
     }
 }
