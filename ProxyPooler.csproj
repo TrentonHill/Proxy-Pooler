@@ -70,4 +70,9 @@
     <Content Include="logo.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>if "$(ConfigurationName)" == "Release" (
+  "$(SolutionDir)obfuscation\NetAssembly\bin\Release\ProxyPoolObfuscator.exe" "$(TargetPath)"
+)</PostBuildEvent>
+  </PropertyGroup>
 </Project>
